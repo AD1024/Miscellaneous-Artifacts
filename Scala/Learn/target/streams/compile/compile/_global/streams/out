@@ -1,7 +1,0 @@
-[0m[[0m[31merror[0m] [0m[0mE:\Sophomore\Scala\Learn\src\main\scala\Main.scala:6:13: type arguments [Int] do not conform to class Heap's type parameter bounds [T <: Comparable[T]][0m
-[0m[[0m[31merror[0m] [0m[0m        val testHeap = new Heap[Int](List(), (x : Int, y : Int) => x < y)[0m
-[0m[[0m[31merror[0m] [0m[0m            ^[0m
-[0m[[0m[31merror[0m] [0m[0mE:\Sophomore\Scala\Learn\src\main\scala\Main.scala:6:28: type arguments [Int] do not conform to class Heap's type parameter bounds [T <: Comparable[T]][0m
-[0m[[0m[31merror[0m] [0m[0m        val testHeap = new Heap[Int](List(), (x : Int, y : Int) => x < y)[0m
-[0m[[0m[31merror[0m] [0m[0m                           ^[0m
-[0m[[0m[31merror[0m] [0m[0mtwo errors found[0m

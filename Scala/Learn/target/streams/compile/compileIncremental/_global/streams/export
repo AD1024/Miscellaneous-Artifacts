@@ -1,1 +1,0 @@
-scalac -bootclasspath C:\Users\ccode\AppData\Local\Coursier\cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-library\2.13.1\scala-library-2.13.1.jar -classpath E:\Sophomore\Scala\Learn\target\scala-2.13\classes E:\Sophomore\Scala\Learn\src\main\scala\libs\Heap.scala
