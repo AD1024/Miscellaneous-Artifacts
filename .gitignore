@@ -1,0 +1,10 @@
+# Haskell
+*.o
+*.hi
+
+# Agda
+*.agdai
+
+# Coq
+*.vo
+*.vso
