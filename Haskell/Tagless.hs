@@ -127,3 +127,8 @@ module Tagless where
 
     -- ill-formed
     -- ill = add (int 0) (lam (\x -> x))
+    process :: (a -> a -> a) -> Maybe a -> Maybe a -> Maybe a
+    process f x y = do
+                        x' <- x
+                        y' <- y
+                        return (f x' y')
