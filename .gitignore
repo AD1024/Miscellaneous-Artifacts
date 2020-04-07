@@ -11,3 +11,7 @@
 
 # Scala
 target
+.bloop
+.idea
+.metals 
+.vscode
