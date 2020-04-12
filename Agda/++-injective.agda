@@ -25,16 +25,6 @@ module ++-Injective where
     lem-l [] = refl
     lem-l (x ∷ xs) = cong (x ∷_) (lem-l xs)
 
-    -- lem-l-l : ∀ {ℓ} {A : Set ℓ} (a b c : List A) → a ++ c ≡ b ++ c → c ++ a ≡ c ++ b
-    -- lem-l-l [] [] c refl = refl
-    -- lem-l-l (x ∷ xs) (y ∷ ys) c eq = 
-
-    -- lem-l-l : ∀ {ℓ} {A : Set ℓ} (a b c : List A) → a ++ c ≡ b ++ c → c ++ a ≡ c ++ b
-    -- lem-l-l a b [] eq rewrite lem-l a | lem-l b with eq
-    -- ... | refl = refl
-    -- eq : a ++ x :: xs == b ++ x :: xs goal : x :: xs ++ a == x :: xs ++ b
-    -- lem-l-l a b (x ∷ xs) eq = lem-l-l a b xs 
-
     -- pretty hard
     -- try to use cong to convert to an eazier problem
     ++-injectiveˡ : ∀ {ℓ} {A : Set ℓ} (a b c : List A) → a ++ c ≡ b ++ c → a ≡ b
