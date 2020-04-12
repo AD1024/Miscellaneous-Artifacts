@@ -84,10 +84,10 @@ instance Nat Peano where
     iter base ind k =
         case k of
             O -> base
-            S k' -> iter (ind base) ind k'
+            S k' -> ind $ iter base ind k'
     plus x y = case x of
                 O -> y
-                S x' -> plus x' y
+                S x' -> S $ plus x' y
     minus x y = case x of
                 O -> O
                 o@(S x') -> case y of
@@ -114,6 +114,31 @@ instance Nat Peano where
 -- Dont do that. You wont learn anything.
 -- Try to use operation specific to list.
 instance Nat [()] where
+  zero = []
+  successor n = () : n
+  nat base step n = 
+      case n of
+        [] -> base
+        _ : xs -> step xs
+  iter base ind n = 
+      case n of
+        [] -> base
+        (_ : xs) -> ind $ iter base ind xs
+  
+  plus = (++)
+  minus x y 
+    | length x > length y = take (length x - length y) x
+    | otherwise           = []
+  
+  mult x y =
+      case x of
+        [] -> []
+        (_ : xs) -> (mult xs y) ++ y
+  
+  pow x y =
+      case y of
+        [] -> [()]
+        (_ : ys) -> mult x (pow x ys)
 
 -- Instead of defining Nat from zero, sucessor (and get Peano),
 -- We can define it from Pattern Matching
@@ -127,11 +152,39 @@ instance Nat Scott where
   mult = substR (liftISO2 isoP) mult
   pow = substR (liftISO2 isoP) pow
 
+  zero = Scott const
+  successor n = Scott $ \_ f -> f n
+  nat base step n = (runScott n) base step
+  iter base step n = (runScott n) base $ iter (step base) step
+
 -- Or from induction!
 newtype Church = Church { runChurch :: forall a. (a -> a) -> a -> a }
+
+iszero (Church n) = n (const False) True
+
+zz :: (Church, Church)
+zz = (zero, zero)
+
+ss :: (Church, Church) -> (Church, Church)
+ss (_, now) = (now, successor now)
+
+churchPred :: Church -> Church
+churchPred (Church n)= fst $ n ss zz
+
 instance Nat Church where
   -- Try to implement the calculation (except minus) in the primitive way.
   -- Implement them by constructing Church explicitly.
   -- So plus should not use successor,
   -- mult should not use plus,
   -- exp should not use mult.
+  zero = Church (\s z -> z)
+  successor = \(Church n) -> Church (\s z -> s $ n s z)
+  nat base step n = if iszero n then base else step (churchPred n)
+
+  iter base step (Church n) = n step base
+
+  plus (Church a) (Church b) = Church $ \s z -> a s (b s z)
+
+  mult (Church a) (Church b) = Church $ a . b
+  pow (Church a) (Church b)  = Church (b a)
+  minus a (Church b) = b churchPred a
