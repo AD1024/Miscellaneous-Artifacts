@@ -47,8 +47,8 @@ module AddComm where
     -- a + b = b + a
     plusCommutes :: Natural a -> Natural b -> Equal (a :+: b) (b :+: a)
     plusCommutes NumZ NumZ     = EqlZ
-    -- plusCommutes NumZ (NumS b) = EqlS (symmetric $ plusZ b NumZ)
-    -- plusCommutes (NumS a) NumZ = EqlS (plusZ a NumZ)
+    plusCommutes NumZ (NumS b) = EqlS (symmetric $ plusZ b NumZ)
+    plusCommutes (NumS a) NumZ = EqlS (plusZ a NumZ)
     plusCommutes (NumS a) b    = transitive 
                                 (symmetric ( plusS a b ))
                                 (symmetric 
