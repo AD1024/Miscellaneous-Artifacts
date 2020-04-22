@@ -128,6 +128,14 @@
 #             ))
 import math
 
+Z = lambda f: (lambda x: f (lambda y: x(x)(y)))(lambda x: f (lambda y: x(x)(y)))
+
+Begin(
+    almost_factorial := lambda f: lambda x: 1 if x == 0 else x * f(x - 1),
+    factorial := Z(almost_factorial),
+    result := factorial(10),
+    result
+)
 
 Begin = lambda *x: x[-1]
 Return = lambda *x: lambda: Begin(*[(None, ) + x])

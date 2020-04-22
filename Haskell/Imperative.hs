@@ -56,3 +56,12 @@ module Imperative where
     (+=) = ops (+)
     (-=) = ops (-)
     (*=) = ops (*)
+
+    factorial :: Integer -> Integer
+    factorial n = def $ do
+                    i <- var n
+                    result <- var 1
+                    while i (>0) $ do
+                        result *= i
+                        i -= lit 1
+                    return result
