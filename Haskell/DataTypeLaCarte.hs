@@ -20,17 +20,17 @@ infixr 1 :+:
 -- which will be useful to evaluate our expressions.
 
 instance Functor Lit where
-  fmap = undefined
+  fmap _ (Lit x) = (Lit x)
 
 instance Functor Add where
-  fmap = undefined
+  fmap f (Add e1 e2) = Add (f e1) (f e2)
 
 instance (Functor f, Functor g) => Functor (f :+: g) where
-  fmap f (Inl a) = undefined
-  fmap f (Inr b) = undefined
+  fmap f (Inl a) = Inl (fmap f a)
+  fmap f (Inr b) = Inr (fmap f b)
 
 foldExpr :: Functor f => (f a -> a) -> Expr f -> a
-foldExpr f (In e) = undefined
+foldExpr f (In e) = f (fmap (foldExpr f) e)
 
 -- Now we can write a simple interpreter.
 -- Your definitions should correspond closely with the definition
@@ -40,17 +40,17 @@ class Functor f => Eval f where
   evalAlgebra :: f Int -> Int
 
 instance Eval Lit where
-  evalAlgebra (Lit x) = undefined
+  evalAlgebra (Lit x) = x
 
 instance Eval Add where
-  evalAlgebra (Add x y) = undefined
+  evalAlgebra (Add x y) = x + y
 
 instance (Eval f, Eval g) => Eval (f :+: g) where
-  evalAlgebra (Inl l) = undefined
-  evalAlgebra (Inr r) = undefined
+  evalAlgebra (Inl l) = evalAlgebra l
+  evalAlgebra (Inr r) = evalAlgebra r
   
 eval :: Eval f => Expr f -> Int
-eval = undefined
+eval e = foldExpr evalAlgebra e
 
 -- HINT: Use foldExpr
 
@@ -78,15 +78,15 @@ class (Functor sub, Functor sup) => sub :<: sup where
 
 -- Reflexivity
 instance Functor f => f :<: f where
-  inj = undefined
+  inj = id
 
 instance {-# OVERLAPS #-} (Functor f, Functor g) =>
   f :<: (f :+: g) where
-  inj = undefined
+  inj = Inl
 
 instance (Functor f, Functor g, Functor h, f :<: g) => 
   f :<: (h :+: g) where
-  inj = undefined
+  inj = Inr . inj
   
 -- Note: overlapping instances is safe
 -- as long as :+: associates to the right.
@@ -98,10 +98,10 @@ inject :: (g :<: f) => g (Expr f) -> Expr f
 inject = In . inj
 
 lit :: (Lit :<: f) => Int -> Expr f
-lit n = undefined
+lit n = inject (Lit n)
 
 add :: (Add :<: f) => Expr f -> Expr f -> Expr f
-add e1 e2 = undefined
+add e1 e2 = inject (Add e1 e2)
 
 -- Then as long as we specify the type, writing expressions is easy.
 
@@ -116,13 +116,13 @@ expr = add (lit 5) (lit 6)
 data Mult a = Mult a a deriving Functor
 
 instance Eval Mult where
-  ??
+  evalAlgebra (Mult x y) = x * y
 
-mult :: ??
-mult e1 e2 = undefined
+mult :: (Mult :<: f) => Expr f -> Expr f -> Expr f
+mult e1 e2 = inject (Mult e1 e2)
 
 -- We must specify the type of expressions
-expr2 :: ??
+expr2 :: Expr (Add :+: Lit :+: Mult)
 expr2 = mult (add (lit 5) (lit 6)) (lit 2)
 
 -- > eval expr
@@ -133,22 +133,23 @@ expr2 = mult (add (lit 5) (lit 6)) (lit 2)
 -- same way as for the first interpreter. 
 
 class Functor f => Pretty f where
-  ??
+  render :: Pretty g => f (Expr g) -> String
 
 pretty :: Pretty f => Expr f -> String
-pretty = undefined
+pretty (In e) = render e
 
 instance Pretty Lit where
-  ??
+  render (Lit x) = show x
 
 instance Pretty Add where
-  ??
+  render (Add x y) = "(" ++ pretty x ++ "+" ++ pretty y ++ ")"
 
 instance Pretty Mult where
-  ??
+  render (Mult x y) = "(" ++ pretty x ++ "*" ++ pretty y ++ ")"
 
 instance (Pretty f, Pretty g) => Pretty (f :+: g) where
-  ??
+  render (Inl e) = render e
+  render (Inr e) = render e
  
 -- > pretty expr1
 -- "(5+6)"

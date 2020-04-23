@@ -33,4 +33,12 @@ succ_pair = lambda pi: pair(succ(car(pi)))(car(pi))
 
 pred = lambda n: cdr(n(succ_pair)(zero_pair))
 
+true = lambda t: lambda f: t
+false = lambda t: lambda f: f
+is_zero = lambda n: n(lambda _: false)(true)
+
+fix = lambda f: (lambda x: f (lambda y: x(x)(y)))(lambda x: f (lambda y: x(x)(y)))
+almost_factorial = lambda f: lambda x: is_zero(x)(one)(lambda n: mult(x)(f(pred(x)))(n))
+factorial = fix(almost_factorial)
+
 minus = lambda n: lambda m: m(pred)(n)
