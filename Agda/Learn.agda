@@ -1,6 +1,6 @@
 module Learn where
     open import Data.Empty using (⊥; ⊥-elim)
-    open import Data.Nat using (ℕ; suc; zero; _+_)
+    open import Data.Nat using (ℕ; suc; zero; _+_; _*_)
     open import Relation.Binary.PropositionalEquality as Eq using (_≡_; refl)
     -- open import Data.Bool using (not)
 
@@ -52,6 +52,11 @@ module Learn where
     plus-trans : ∀ (x y z : ℕ) → x + y + z ≡ x + (y + z)
     plus-trans 0 y z = refl
     plus-trans (suc x) y z = cong suc (plus-trans x y z)
+
+    plus-mult-distrib : ∀ (m n p : ℕ) → (m + n) * p ≡ m * p + n * p
+    plus-mult-distrib zero n p = refl
+    plus-mult-distrib (suc m) n p
+      rewrite (plus-mult-distrib m n p) | (plus-trans p (m * p) (n * p)) = refl
 
     isZero : ℕ → Bool
     isZero 0 = True
