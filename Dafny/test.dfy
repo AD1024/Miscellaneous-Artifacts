@@ -1,35 +1,35 @@
-datatype Nat = Z | S(Nat)
+// datatype Nat = Z | S(Nat)
 
-function add(x : Nat, y : Nat): Nat 
-decreases x
-{
-    match x
-        case Z => y
-        case S(n) => S(add(n, y))
-}
+// function add(x : Nat, y : Nat): Nat 
+// decreases x
+// {
+//     match x
+//         case Z => y
+//         case S(n) => S(add(n, y))
+// }
 
-ghost method addZ (y : Nat) 
-ensures y == add(Z, y)
-{}
+// ghost method addZ (y : Nat) 
+// ensures y == add(Z, y)
+// {}
 
-ghost method addS(x : Nat, y : Nat)
-ensures S(add(x, y)) == add(x, S(y)) {}
+// ghost method addS(x : Nat, y : Nat)
+// ensures S(add(x, y)) == add(x, S(y)) {}
 
-ghost method add_comm(x : Nat, y : Nat)
-ensures add(x, y) == add(y, x) {
-    match x
-        case Z => calc {
-            add(Z, y); == y; == { addZ(y); } add(y, Z);
-        }
-        case S(x') => calc {
-                add(S(x'), y);
-            ==  S(add(x', y)); // definition
-            ==	{ add_comm(x',y); } // IH
-                S(add(y, x'));
-            ==	{ addS(y, x'); }
-                add(y, S(x'));
-        }
-}
+// ghost method add_comm(x : Nat, y : Nat)
+// ensures add(x, y) == add(y, x) {
+//     match x
+//         case Z => calc {
+//             add(Z, y); == y; == { addZ(y); } add(y, Z);
+//         }
+//         case S(x') => calc {
+//                 add(S(x'), y);
+//             ==  S(add(x', y)); // definition
+//             ==	{ add_comm(x',y); } // IH
+//                 S(add(y, x'));
+//             ==	{ addS(y, x'); }
+//                 add(y, S(x'));
+//         }
+// }
 
 // function method calculateSum(s : seq<int>): int 
 // decreases |s|

@@ -2,12 +2,18 @@ class Z:
     def __str__(self):
         return "Z"
 
+    def to_nat(self):
+        return 0
+
 class S:
     def __init__(self, p):
         self.p = p
 
     def __str__(self):
         return f"S({str(self.p)})"
+
+    def to_nat(self):
+        return 1 + self.p.to_nat()
 
 Zero = Z()
 Succ = S
