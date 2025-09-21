@@ -162,4 +162,16 @@ theorem rev_rev_id' (xs: List α):
             simp [rev']
             rw[rev'_app2]
             simp [rev']
+
+theorem rev_rev'_equiv (xs: List α):
+    reverse_lst xs = rev' xs [] := by
+    induction xs with
+        | nil => rfl
+        | cons x xs' ih =>
+            simp [reverse_lst, rev']
+            rw [ih]
+            rw [←rev'_app2]
+            simp [rev']
+
+#print rev_rev_id'
 end Hidden
